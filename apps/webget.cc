@@ -1,5 +1,4 @@
 #include "socket.hh"
-
 #include <cstdlib>
 #include <iostream>
 #include <span>
@@ -10,9 +9,21 @@ using namespace std;
 void get_URL( const string& host, const string& path )
 {
   cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
-  cerr << "Warning: get_URL() has not been implemented yet.\n";
+  //创建套接字
+  TCPSocket tcpSocket;
+  tcpSocket.connect( Address( host, "http" ) );
+  tcpSocket.write( "GET " + path + " HTTP/1.1\r\n" );
+  tcpSocket.write( "Host: " + host + "\r\n" );
+  tcpSocket.write( "Connection: close\r\n" );
+  tcpSocket.write( "\r\n" );
+while (!tcpSocket.eof()) {
+    std::string buffer;
+    tcpSocket.read(buffer);  // 使用 string 引用接收数据
+    cout << buffer;          // 直接输出接收到的数据
+    buffer.clear();
 }
-
+  tcpSocket.close();
+}
 int main( int argc, char* argv[] )
 {
   try {
